@@ -74,6 +74,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
   protected Uri cameraCaptureURI;
   private Boolean noData = false;
   private Boolean pickVideo = false;
+  private Boolean cancelled = false;
   private ImageConfig imageConfig = new ImageConfig(null, null, 0, 0, 100, 0, false);
 
   @Deprecated
@@ -148,6 +149,7 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
     }
 
     this.callback = callback;
+    this.cancelled = false;
     this.options = options;
     imageConfig = new ImageConfig(null, null, 0, 0, 100, 0, false);
 
@@ -199,7 +201,10 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
 
   public void doOnCancel()
   {
-    responseHelper.invokeCancel(callback);
+    if (!cancelled) {
+      responseHelper.invokeCancel(callback);
+      cancelled = true;
+    }
   }
 
   public void launchCamera()
