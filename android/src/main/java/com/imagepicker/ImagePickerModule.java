@@ -429,7 +429,18 @@ public class ImagePickerModule extends ReactContextBaseJavaModule
         return;
     }
 
-    final ReadExifResult result = readExifInterface(responseHelper, imageConfig);
+    final ReadExifResult result;
+    try
+    {
+      result = readExifInterface(responseHelper, imageConfig);
+    }
+    catch (RuntimeException e)
+    {
+      removeUselessFiles(requestCode, imageConfig);
+      responseHelper.invokeError(callback, e.getMessage());
+      callback = null;
+      return;
+    }
 
     if (result.error != null)
     {
